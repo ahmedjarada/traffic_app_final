@@ -244,7 +244,7 @@ def request_verification(request):
             pin = rand_PINCode(4)
             new_pin = clientPIN.objects.create(PIN=pin, user_id=user, reset_by='E')
             new_pin.save()
-            flag = send_verificationPIN_bymail(to_email=user.mobile_no, PIN=pin)
+            flag = send_verificationPIN_bymail(to_email=user.email, PIN=pin)
 
             # Return method
             if flag:
@@ -255,7 +255,7 @@ def request_verification(request):
                                  msg='Your account already verified', status_http=200)
         else:
             if reg_pin.PIN and not reg_pin.is_opened:
-                flag = send_verificationPIN_bymail(to_email=user.mobile_no, PIN=reg_pin.PIN)
+                flag = send_verificationPIN_bymail(to_email=user.email, PIN=reg_pin.PIN)
                 if flag:
                     return json_response(status_data=True, data={}, errors=[],
                                          msg='The email message verification has been sent', status_http=200)
@@ -267,7 +267,7 @@ def request_verification(request):
                 pin = rand_PINCode(4)
                 new_pin = clientPIN.objects.create(PIN=pin, user_id=user, reset_by='E')
                 new_pin.save()
-                flag = send_verificationPIN_bymail(to_email=user.mobile_no, PIN=pin)
+                flag = send_verificationPIN_bymail(to_email=user.email, PIN=pin)
                 if flag:
                     return json_response(status_data=True, data={}, errors=[],
                                          msg='The message verification has been sent', status_http=200)
