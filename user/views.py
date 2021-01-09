@@ -355,7 +355,7 @@ def forgot_password_request(request):
         registered_email = find_.email
     except Exception:
         return json_response(status_data=False, data={}, errors=['Value Error'], status_http=403,
-                             msg='Sorry, no user registered for mobile number')
+                             msg='Sorry, no user registered for this email')
 
     if registered_email == email:
         pin = rand_PINCode(4)
@@ -365,14 +365,14 @@ def forgot_password_request(request):
         # Return method
         if send_resetpassword_bymail(find_.email, pin):
             return json_response(status_data=True, data={}, errors=[], status_http=200,
-                                 msg='Your reset mobile message has been sent')
+                                 msg='Your reset email message has been sent')
         else:
             return json_response(status_data=False, data={}, errors=[], status_http=403,
                                  msg='Invalid Internal Server Error')
 
     else:
         return json_response(status_data=False, data={}, errors=[], status_http=403,
-                             msg='Sorry, no user registered for this mobile')
+                             msg='Sorry, no user registered for this email')
 
 
 # Define pin that be sent to normal user
