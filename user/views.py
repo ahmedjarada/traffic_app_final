@@ -56,19 +56,21 @@ def email_check_validation(request):
         flag = True
     except KeyError as e:
         errors.append(e.args[0])
-    try:
-        state = request.data["state"]
-        flag = True
-    except KeyError as e:
-        errors.append(e.args[0])
+    # try:
+    #     state = request.data["state"]
+    #     flag = True
+    # except KeyError as e:
+    #     errors.append(e.args[0])
     try:
         gender = request.data["gender"]
     except KeyError as e:
         pass
+    print(errors)
     if len(errors) > 0:
         return json_response(status_data=False, data={}, errors=[{e: "This field is required"} for e in errors],
                              status_http=200,
                              msg='Please fill all required fields')
+
     if flag:
         if len(User.objects.filter(username=username)) > 0 and len(User.objects.filter(email=email)) > 0:
             return json_response(status_data=False, data={},
@@ -132,11 +134,11 @@ class RegisterUserAPI(generics.GenericAPIView):
             flag = True
         except KeyError as e:
             errors.append(e.args[0])
-        try:
-            state = request.data["state"]
-            flag = True
-        except KeyError as e:
-            errors.append(e.args[0])
+        # try:
+        #     state = request.data["state"]
+        #     flag = True
+        # except KeyError as e:
+        #     errors.append(e.args[0])
         try:
             gender = request.data["gender"]
         except KeyError as e:
@@ -231,11 +233,9 @@ class LoginAPI(KnoxLoginView):
 @permission_classes([IsAuthenticated])  # Required user login by api
 def request_verification(request):
     if request.method == 'POST':
-
         # Initialize
         reg_pin = None
         user = None
-
         # Processes
         try:
             user = User.objects.get(pk=request.user.id)
@@ -250,11 +250,9 @@ def request_verification(request):
             if flag:
                 return json_response(status_data=True, data={}, errors=[],
                                      msg='The email message verification has been sent', status_http=200)
-
         if user.is_verified:
             return json_response(status_data=False, data={}, errors=[],
                                  msg='Your account already verified', status_http=200)
-
         else:
             if reg_pin.PIN and not reg_pin.is_opened:
                 flag = send_verificationPIN_bymail(to_email=user.mobile_no, PIN=reg_pin.PIN)
@@ -282,7 +280,6 @@ def request_verification(request):
 @permission_classes([IsAuthenticated])  # Required user login by api
 def confirm_verification(request):
     if request.method == 'POST':
-
         try:
             pin = request.data["pin"]
 
@@ -290,7 +287,6 @@ def confirm_verification(request):
             return json_response(status_data=False, data={}, errors=[{f"{e.args[0]}": "This field is required"}],
                                  status_http=403,
                                  msg=f'{e.args[0]} field is required')
-
         try:
             reg_pin = clientPIN.objects.get(user_id_id=request.user.id)
         except ObjectDoesNotExist:
@@ -307,7 +303,6 @@ def confirm_verification(request):
                                      data=UserSerializer(User.objects.get(pk=request.user.id), many=False).data,
                                      errors=[], status_http=200,
                                      msg='Your account already verified')
-
             else:
                 user.is_verified = True
                 reg_pin.is_opened = True
@@ -351,7 +346,7 @@ def get_current_account(request):
 def forgot_password_request(request):
     # Processes
     try:
-        email = request.data['username']
+        email = request.data['email']
     except Exception:
         return json_response(status_data=False, data={}, errors=['Key Error'], status_http=403,
                              msg='Invalid input')
@@ -390,14 +385,14 @@ def forgot_password_check_pin(request):
     # Processes
     try:
         pin = request.data['pin']
-    except Exception:
+    except KeyError as e:
         return json_response(status_data=False, data={}, errors=['Key Error'], status_http=403,
                              msg='No PIN Entered')
 
     # Return method
     if pin is not None:
         client_reset = clientReset.objects.get(code=pin)
-        if client_reset.is_opened == False:
+        if not client_reset.is_opened:
             if bool(client_reset):
                 return json_response(status_data=True, data={}, errors=[], status_http=200,
                                      msg='Success confirm PIN')
@@ -423,13 +418,13 @@ def forgot_password_confirm(request):
         pin = request.data['pin']
         password = request.data['password']
         confirm_password = request.data['confirm_password']
-    except Exception:
+    except KeyError as e:
         return json_response(status_data=False, data={}, errors=['NOT_FOUND'], status_http=403,
                              msg='All fields must be fill')
 
     if pin is not None:
         client_get_user = clientReset.objects.get(code=pin)
-        if client_get_user.is_opened == False:
+        if not client_get_user.is_opened:
             client_get_user.is_opened = True
             client_get_user.save()
             user = client_get_user.user_id

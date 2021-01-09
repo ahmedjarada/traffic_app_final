@@ -22,6 +22,9 @@ from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from .swagger_api_generator import SwaggerAPISchemaGenerator
+from django.conf import settings
+from django.conf.urls.static import static
+# from history.views import HistoryAPI
 
 
 # from rest_framework.schemas import get_schema_view as schema_view
@@ -33,16 +36,18 @@ def home(request):
 urlpatterns = [path('', home),
                path('admin/', admin.site.urls),
                path('account/', include('user.urls')),
+               path('history/', include('history.urls')),
                path('delete_account/', delete_user), ]
 
-sawgger_view = get_schema_view(
+swagger_view = get_schema_view(
     openapi.Info(
         title="Traffic App API",
-        default_version='v1',
+        default_version='v1.1',
         description="This is a traffic RESTFUL App",
-        terms_of_service="",
-        contact=openapi.Contact(email=""),
-        license=openapi.License(name=""),
+        terms_of_service="https://raw.githubusercontent.com/ahmedjarada/traffic_app_final/main/LICENSE",
+        contact=openapi.Contact(email="ahmedjarada@hotmail.com"),
+        license=openapi.License(url="https://raw.githubusercontent.com/ahmedjarada/traffic_app_final/main/LICENSE",
+                                name='MIT License'),
     ),
     public=True,
     permission_classes=(permissions.AllowAny,),
@@ -51,9 +56,10 @@ sawgger_view = get_schema_view(
 )
 
 urlpatterns += [
-    url(r'^swagger(?P<format>\.json|\.yaml)$', sawgger_view.without_ui(cache_timeout=0), name='schema-json'),
-    url(r'^swagger/$', sawgger_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-    url(r'^redoc/$', sawgger_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+                   url(r'^swagger(?P<format>\.json|\.yaml)$', swagger_view.without_ui(cache_timeout=0),
+                       name='schema-json'),
+                   url(r'^swagger/$', swagger_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+                   url(r'^redoc/$', swagger_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 
-]
-
+               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL,
+                                                                                          document_root=settings.STATIC_ROOT)

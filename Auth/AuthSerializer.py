@@ -1,3 +1,5 @@
+from abc import ABC
+
 from django.contrib.auth import authenticate
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
@@ -16,16 +18,7 @@ class AuthTokenSerializer(serializers.Serializer):
     def validate(self, attrs):
         email = None
         username = None
-        # flag = False
         user = None
-        # print(attrs.get('email'))
-        # print(attrs.get('mobile_no'))
-        # try:
-        #
-        #     email = attrs.get('email').lower()
-        #     flag = True
-        # except Exception as e:
-        #     pass
         email = attrs.get('email').lower()
         password = attrs.get('password')
 
@@ -35,7 +28,7 @@ class AuthTokenSerializer(serializers.Serializer):
                 try:
                     username = User.objects.get(email=email).username
                 except User.DoesNotExist as e:
-                    print()
+                    # print()
                     raise serializers.ValidationError({'0':
                                                            'The email or username with password you\'ve is incorrect!'})
                 if username is not None:

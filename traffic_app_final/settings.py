@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'user', 'client', 'knox', 'rest_framework', 'drf_yasg'
+    'user', 'client', 'knox', 'rest_framework', 'drf_yasg', 'history', 'records',
 ]
 
 MIDDLEWARE = [
@@ -100,18 +100,34 @@ SWAGGER_SETTINGS = {
             'type': 'apiKey',
             'name': 'Authorization',
             'in': 'header',
-            'example_value': 'Token '
+            'example_value': 'Token 24b68213de74af885c227bd24a6bcc1f7b336492d032706f72ce96713cf3b399'
         }
     }
 }
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
-
 DATABASES = {
+    # 'default': {
+    #     "ENGINE": "django.db.backends.postgresql_psycopg2",
+    #     "NAME": os.environ.get('DBNAME', ''),
+    #     "USER": os.environ.get('DBUSER', ''),
+    #     "PASSWORD": os.environ.get('DBPASS', ''),
+    #     "HOST": os.environ.get('DBHOST', ''),
+    #     "PORT": "5432",
+    # }
+    # 'default': {
+    #         "ENGINE": "django.db.backends.postgresql_psycopg2",
+    #         "NAME": "postgres",
+    #         "USER": "ahmedjarada@trafficappfinal",
+    #         "PASSWORD": "Aj1331997",
+    #         "HOST": "trafficappfinal.postgres.database.azure.com",
+    #         "PORT": "5432",
+    #     }
+    # dbname='{your_database}' user='' host='' password='{your_password}' port='5432' sslmode='true'
     'default': {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": "traffic_app",
+        "NAME": "trafficapp",
         "USER": "postgres",
         "PASSWORD": "Aj1331997",
         "HOST": "localhost",
@@ -136,7 +152,16 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
+# DEFAULT_FILE_STORAGE = 'traffic_app_final.azure.AzureMediaStorage'
+# STATICFILES_STORAGE = 'traffic_app_final.azure.AzureStaticStorage'
+#
+# STATIC_LOCATION = "static"
+# MEDIA_LOCATION = "media"
+#
+# AZURE_ACCOUNT_NAME = "statictrafficpp"
+# AZURE_ACCOUNT_KEY = "sEw/8IRWsml/NsufJcBr5InX9kGmhwvEYrofOiVFkBFWt8KBE/H9OkNCY/5djz5qEFPvH7j7krT93Z5eAC+oCQ=="
+# STATIC_URL = f'https://statictrafficpp.blob.core.windows.net/static/'
+# MEDIA_URL = f'https://statictrafficpp.blob.core.windows.net/media/'
 # Email Settings
 # Email Service backend:
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -179,15 +204,12 @@ STATIC_URL = '/static/'
 #         os.path.join(BASE_DIR, 'static/'),
 #
 #     ]
-
 # # For production mod
 # else:
 STATIC_ROOT = sys.path[0] + STATIC_URL
-
 # FIREBASE CONFIG
 credentials_firebase = f"{BASE_DIR}/DB_SDK/traffic-app-fd021-firebase-adminsdk-u7fco-a4de069fa4.json"
 server_token_firebase = 'AAAA_A_Ipmk:APA91bGdwKhgfgI9EXa2JhyUZjy5GA-lEfWQDPdFQ8mVL33LVexo_1nFsGSEXndZxFOHMIW08oJQKlKxlFneKmwQPEXlNJYZdOCyEqtqwRY6S39ZtSYU8XxqnMTuKJ-YXvI5ppwprB4j'
-
 # Media Settings
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
