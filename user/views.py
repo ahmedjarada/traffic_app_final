@@ -435,7 +435,7 @@ def forgot_password_confirm(request):
 
                 # Return Method
                 return json_response(status_data=True, data={}, errors=[], status_http=200,
-                                     msg='Success reset password')
+                                     msg='Success reset the password, you can login with new password now')
             else:
                 return json_response(status_data=False, data={}, errors=['FORBIDDEN'], status_http=403,
                                      msg='Passwords you have entered not matched')
